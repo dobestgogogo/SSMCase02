@@ -25,8 +25,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/user")
-/*@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-@JsonSerialize(using=JsonDateSerializer.class)*/
 public class UserController {
 
     @Resource
@@ -125,7 +123,9 @@ public class UserController {
     public Object lookInfo(HttpServletRequest request){
         Integer pageNum = request.getParameter("pageNum") == null ? 1 :Integer.parseInt(request.getParameter("pageNum"));
         Integer num = Integer.parseInt(request.getParameter("num"));
-        Integer pageSize = 5;
+        Integer count = userService.getCount();//获取总记录数
+        System.out.println(count);
+        Integer pageSize = 8;
         PageInfo pageInfo = userService.findAll(pageNum, pageSize, num);
         return pageInfo;
     }
