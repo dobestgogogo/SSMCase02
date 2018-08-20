@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tjx.dao.UserMapper">
+    <select id="login" parameterType="User" resultType="User">
+        SELECT id,userName,password,realName FROM users
+        <where>
+            userName=#{userName} and password=#{password}
+        </where>
+    </select>
+
+    <select id="sale"  resultType="Product">
+      SELECT id,productName,quantity FROM product
+    </select>
+
+    <insert id="addSale" parameterType="map">
+      INSERT INTO sale(price,quantity,totalPrice,saleDate,userId,productId) VALUES (#{price},#{quantity},#{price}*#{quantity},#{date},#{uid},#{pid})
+    </insert>
+
+    <!--<select id="lookInfo"  resultMap="lookInfoMap">
+        SELECT s.id,s.price,s.quantity,s.totalPrice,s.saleDate,u.realName,p.productName FROM sale s,users u,product p WHERE s.`userId`=u.`id` AND s.`productId`=p.`id`
+        <choose>
+            <when test="num == 1">
+                ORDER BY s.`saleDate` DESC
+            </when>
+            <when test="num == 2">
+                ORDER BY s.`totalPrice` DESC
+            </when>
+        </choose>
+        LIMIT ${(pageindex-1)*pageSize},${pageSize}
+    </select>
+    <resultMap id="lookInfoMap" type="sale">
+        <id property="id" column="id"/>
+        <result property="price" column="price"/>
+        <result property="totalPrice" column="totalPrice"/>
+        <result property="quantity" column="quantity"/>
+        <result property="saleDate" column="saleDate"/>
+        <association property="user" javaType="com.tjx.pojo.User">
+            <result column="realName" property="realName"/>
+        </association>
+        <association property="product" javaType="com.tjx.pojo.Product">
+            <result column="productName" property="productName"/>
+        </association>
+    </resultMap>-->
+
+    <select id="findAll" resultMap="lookInfoMap" parameterType="string">
+        SELECT s.id,s.price,s.quantity,s.totalPrice,s.saleDate,u.realName,p.productName FROM sale s,users u,product p WHERE s.`userId`=u.`id` AND s.`productId`=p.`id`
+        <choose>
+            <when test="num == 1">
+                ORDER BY s.`saleDate` DESC
+            </when>
+            <when test="num == 2">
+                ORDER BY s.`totalPrice` DESC
+            </when>
+        </choose>
+    </select>
+
+    <resultMap id="lookInfoMap" type="sale">
+        <id property="id" column="id"/>
+        <result property="price" column="price"/>
+        <result property="totalPrice" column="totalPrice"/>
+        <result property="quantity" column="quantity"/>
+        <result property="saleDate" column="saleDate"/>
+        <association property="user" javaType="com.tjx.pojo.User">
+            <result column="realName" property="realName"/>
+        </association>
+        <association property="product" javaType="com.tjx.pojo.Product">
+            <result column="productName" property="productName"/>
+        </association>
+    </resultMap>
+
+
+    <select id="getCount" resultType="Integer">
+        SELECT count(1) as count FROM sale
+    </select>
+
+    <select id="getQuantity" resultType="Product">
+        SELECT id,productName,quantity FROM product WHERE id=#{pid}
+    </select>
+
+    <update id="updateQuantity" parameterType="map">
+        UPDATE product SET quantity=${quantity-num} WHERE id=#{pid}
+    </update>
+</mapper>
+
